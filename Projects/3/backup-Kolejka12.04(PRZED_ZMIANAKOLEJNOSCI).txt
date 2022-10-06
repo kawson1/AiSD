@@ -1,0 +1,209 @@
+#include "Kolejka.h"
+#include <iostream>
+
+using namespace std;
+
+void Kolejka::Push(int x)
+{
+	if (!lista->first)
+	{
+		lista->AddBeg(x);
+		front = back = lista->first;
+	}
+	else
+	{
+		if (!front)
+		{
+			front = back = lista->first;
+			front->value = x;
+		}
+		else if (lista->size == count)
+		{
+			//TODO MOCNY PRZYPADEK
+			if (front = lista->first)
+			{
+				lista->AddBeg(x);
+				Element* tmp = front;
+				Element* preTmp = pre;
+				Element* preCpy;
+				while (tmp != back)
+				{
+					preCpy = tmp;
+					tmp = XOR(preTmp, tmp->npx);
+					preTmp = preCpy;
+				}
+				back = XOR(preTmp, tmp->npx);
+				if (!back)
+					back = lista->first;
+				back->value = x;
+			}
+		}
+		else
+		{
+			Element* tmp = front;
+			Element* preTmp = pre;
+			Element* preCpy;
+			while (tmp != back)
+			{
+				preCpy = tmp;
+				tmp = XOR(preTmp, tmp->npx);
+				preTmp = preCpy;
+			}
+			back = XOR(preTmp, tmp->npx);
+			if (!back)
+				back = lista->first;
+			back->value = x;
+		}
+	}
+	count++;
+}
+void Kolejka::Pop()
+{
+	if (front)
+	{
+		if (front == back)
+			front = nullptr;
+		else
+		{
+			if (XOR(pre, front->npx) == NULL)
+			{
+				pre = nullptr;
+				front = lista->first;
+			}
+			else
+			{
+				Element* temp = front;
+				front = XOR(pre, front->npx);
+				pre = temp;
+			}
+		}
+	count--;
+	}
+}
+
+void Kolejka::Push2(int x)
+{
+	if (lista->first)
+	{
+		if (count == lista->size)
+		{
+			if (back == lista->first)
+			{
+				lista->AddBeg(x);
+				queue.push_back(lista->first);
+				pre = back;
+				back = lista->first;
+			}
+			else if(front==lista->first)
+			{
+				Element* newEl = new Element;
+				Element* nextEl = XOR(back->npx,pre); //Next to back el
+				newEl->value = x;
+				newEl->npx = XOR(nextEl,back);
+				nextEl->npx = XOR(XOR(nextEl->npx, back), newEl);
+				back->npx = XOR(newEl,pre);
+				queue.push_back(newEl);
+				back = newEl;
+			}
+			else
+			{
+				Element* newEl = new Element;
+				newEl->value = x;
+				newEl->npx = XOR(back, front);
+				back->npx = XOR(XOR(back->npx, front), newEl);
+				front->npx = XOR(newEl, XOR(back, front->npx));
+				queue.push_back(newEl);
+				back = newEl;
+			}
+		}
+		else
+		{
+			if (front)
+			{
+				if (back == lista->first)
+				{
+					pre = nullptr;
+					back = lista->last;
+					back->value = x;
+				}
+				else
+				{
+					Element* next = XOR(back->npx, pre);
+					if(next) //if back is going to be NULL
+						back = next;
+					else //skip to last element of list
+					{
+						back = lista->last;
+						pre = nullptr;
+					}
+					back->value = x;
+				}
+			}
+			else //if queue was deleted to null (front null, back not null) then front=back
+			{
+				front = back;
+				back->value = x;
+			}
+			queue.push_back(back);
+		}
+	}
+	else
+	{
+		lista->AddBeg(x);
+		queue.push_back(lista->first);
+		front = back = lista->first;
+	}
+	count++;
+}
+void Kolejka::PrintQueue2()
+{
+	if (queue.empty())
+		cout << "NULL" << endl;
+	else
+		for (Element* n : queue)
+			cout << n->value << " ";
+		cout << endl;
+}
+void Kolejka::Pop2()
+{
+	if (front)
+	{
+		queue.pop_front();
+		if (queue.empty())
+			front = nullptr;
+		else
+			front = queue.front();
+		count--;
+	}
+}
+
+void Kolejka::PrintQueue()
+{
+	if (front)
+	{
+		Element* temp = front;
+		Element* preTemp = pre;
+		Element* preCpy = front;
+		while (temp!=back)
+		{
+			preCpy = temp;
+			cout << temp->value << " ";
+			temp = XOR(preTemp, temp->npx);
+			if (!temp)
+			{
+				temp = lista->first;
+				preTemp = nullptr;
+			}
+			preTemp = preCpy;
+		}
+		cout << temp->value << endl;
+	}
+	else
+		cout << "NULL" << endl;
+}
+
+//Kolejka::~Kolejka()
+//{
+//	cout << "s";
+//	delete lista;
+//}

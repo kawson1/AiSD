@@ -1,0 +1,55 @@
+Element* newEl = new Element;
+				Element* nextEl = XOR(back->npx,pre); //Next to back el
+				newEl->value = x;
+				newEl->npx = XOR(nextEl,back);
+				nextEl->npx = XOR(XOR(nextEl->npx, back), newEl);
+				back->npx = XOR(XOR(back->npx, NULL), newEl);
+				queue.push_back(newEl);
+
+
+PUSH 1
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+PUSH 2
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+PUSH 3
+PRINT_FORWARD
+PRINT_QUEUE
+
+SIZE
+COUNT
+POP
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+PUSH 4
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+POP
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+POP
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+POP
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
+POP
+PRINT_FORWARD
+PRINT_QUEUE
+SIZE
+COUNT
